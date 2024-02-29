@@ -4,14 +4,24 @@
     export let image: string;
 </script>
 
-<h1>{title}</h1>
+<div
+    class="h-max[500px] flex max-w-sm flex-col gap-2 rounded-lg border border-gray-200 bg-white p-6 shadow dark:border-gray-700 dark:bg-gray-800"
+>
+    <a href="/{mal_id}">
+        <h5
+            class="mb-2 text-xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
+            {title}
+        </h5>
+    </a>
 
-<a href="/{mal_id}">
-    <img
-        class="hover:opacity-50 hover:cursor-pointer"
-        src={image}
-        alt={title}
-        height="200px"
-        width="200px"
-    />
-</a>
+    <a href="/{mal_id}">
+        <img
+            class="hover:cursor-pointer hover:opacity-50"
+            src={image}
+            alt={title}
+            height="200px"
+            width="200px"
+        />
+    </a>
+</div>

@@ -21,10 +21,13 @@ type RecommendedAnime = {
 };
 
 export const load = (async () => {
-    const recommended = await api<RecommendedAnime>("https://api.jikan.moe/v4/recommendations/anime");
+    const recommended = await api<RecommendedAnime>(
+        "https://api.jikan.moe/v4/recommendations/anime",
+    );
     if (!recommended.success) {
         throw error(500, "Failed to fetch recommended anime");
     }
+
     return {
         recommended: recommended.data,
     };

@@ -22,11 +22,11 @@
         name="image"
         value={data.anime.images.webp.image_url}
     />
-    <button class="bg-gray-300 rounded p-4 mt-4" type="submit">
+    <button class="mt-4 rounded bg-gray-300 p-4" type="submit">
         Add to favorites
     </button>
 </form>
 
 <div class="mt-10">
-    <a class="bg-gray-300 rounded p-4" href="/">Go back to list</a>
+    <a class="rounded bg-gray-300 p-4" href="/">Go back to list</a>
 </div>

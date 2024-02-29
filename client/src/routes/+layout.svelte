@@ -10,9 +10,14 @@
     <div>
         <slot />
     </div>
-    <div>
-        {#each [...data.favorites] as [key, value]}
-            <Anime title={value.title} mal_id={key} image={value.image} />
+    <div class="ml-10">
+        <h2 class="my-5 text-xl">My favorites:</h2>
+        {#each data.favorites.data as value}
+            <Anime
+                title={value.title}
+                mal_id={value.mal_id}
+                image={value.image}
+            />
         {/each}
     </div>
 </div>

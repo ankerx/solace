@@ -59,6 +59,12 @@ func main() {
 	e.GET("/favorites", func(c echo.Context) error {
 		return services.GetFavorites(c)
 	})
+	e.POST("/favorites", func(c echo.Context) error {
+		return services.AddToFavorites(c)
+	})
+	e.DELETE("/favorites/:id", func(c echo.Context) error {
+		return services.RemoveFromFavorites(c)
+	})
 
 	slog.Info("HTTP server listening on", "port", system.HTTP_PORT)
 	err = e.Start(":" + system.HTTP_PORT)
