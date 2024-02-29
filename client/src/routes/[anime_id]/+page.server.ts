@@ -1,7 +1,14 @@
 import api from "$lib/server/api";
 import { error } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
-import favorites from "$lib/data";
+import { SERVER_URL } from "$env/static/private";
+import * as z from "zod";
+import { fail } from "@sveltejs/kit";
+const schema = z.object({
+    mal_id: z.number(),
+    title: z.string(),
+    image: z.string(),
+});
 
 export type Anime = {
     data: {
@@ -21,14 +28,12 @@ export type Anime = {
 
 export const load = (async ({ params }) => {
     const id = params.anime_id;
-    const anime = await api<Anime>(
-        `https://api.jikan.moe/v4/anime/${id}`,
-    );
+    const anime = await api<Anime>(`https://api.jikan.moe/v4/anime/${id}`);
     if (!anime.success) {
         console.error("Failed to fetch anime", anime.error);
         throw error(500, "Failed to fetch anime");
     }
-    console.debug("anime", anime.data);
+
     return {
         anime: anime.data.data,
     };
@@ -38,13 +43,43 @@ export const actions = {
     addToFavorites: async ({ request }) => {
         const form = await request.formData();
 
-        // validate form
-        const mal_id = form.get("mal_id") as unknown as number;
-        const title = form.get("title") as unknown as string;
-        const image = form.get("image") as unknown as string;
+        const mal_id = Number(form.get("mal_id"));
+        const title = form.get("title");
+        const image = form.get("image");
 
-        favorites.set(mal_id, { title: title, image: image });
+        try {
+            const data = schema.parse({
+                mal_id,
+                title,
+                image,
+            });
+            const go_server_add_favorites = await api(
+                SERVER_URL + "/favorites",
+                {
+                    method: "POST",
+                    body: data,
+                },
+            );
+            if (!go_server_add_favorites.success) {
+                console.error(
+                    "Failed to add to favorites",
+                    go_server_add_favorites.error,
+                );
+            } else {
+                console.log("Added to favorites", go_server_add_favorites.data);
+            }
+            return { success: true };
+        } catch (error) {
+            console.log(error);
 
-        return { success: true };
+            if (error instanceof z.ZodError) {
+                return fail(400, {
+                    message: error.issues,
+                });
+            }
+            return fail(400, {
+                message: "Failed to add to favorites!",
+            });
+        }
     },
 } satisfies Actions;
